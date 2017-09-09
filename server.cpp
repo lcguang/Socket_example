@@ -7,7 +7,7 @@
 #include <cstring>
 #include <iostream>
 
-int main() {
+int main(int argc, char *argv[]) {
     // Create socket
     int sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd == -1) {
@@ -43,7 +43,7 @@ int main() {
     }
 
     // Create buffer and receive message
-    std::string answer = "6524";
+    std::string answer(argv[1]);
     char recv_data[10];
     while (true) {
         memset(recv_data, 0, sizeof(recv_data));
