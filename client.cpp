@@ -59,11 +59,7 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
 
-    std::string s = "1234";
-    int r = getResponse(&sockfd, s.c_str());
-
     // Main algorithm
-    /*
     std::unordered_set<int> nums;
     for (int i = 1; i < 7; i++) {
         std::string send_data = std::to_string(i * 1111);
@@ -93,7 +89,6 @@ int main(int argc, char *argv[]) {
     if (getResponse(&sockfd, send_data.c_str()) == 4) {
         std::cout << "Success!" << std::endl;
     }
-    */
 
     close(sockfd);
     return 0;

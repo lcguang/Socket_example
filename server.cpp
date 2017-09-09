@@ -44,15 +44,16 @@ int main() {
 
     // Create buffer and receive message
     std::string answer = "1234";
-    char recv_data[1024];
+    char recv_data[10];
     while (true) {
         memset(recv_data, 0, sizeof(recv_data));
         int recv_len = 0;
         while (recv_len == 0) {
-            recv_len = recv(sockfd, recv_data, sizeof(recv_data), 0);
+            recv_len = recv(msg_fd, recv_data, sizeof(recv_data), 0);
         }
         if (recv_len == -1) {
             std::cerr << "error receiving message" << std::endl;
+            exit(1);
         }
 
         int count = 0;
