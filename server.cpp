@@ -43,7 +43,7 @@ int main() {
     }
 
     // Create buffer and receive message
-    std::string answer = "1234";
+    std::string answer = "6524";
     char recv_data[10];
     while (true) {
         memset(recv_data, 0, sizeof(recv_data));

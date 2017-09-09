@@ -28,7 +28,7 @@ int getResponse(int* sockfd, const char* send_data) {
 
     std::cout << "Correct number of digits: " << recv_data << std::endl;
     
-    return recv_data[0] + '0';
+    return recv_data[0] - '0';
 }
 
 int main(int argc, char *argv[]) {
@@ -64,8 +64,8 @@ int main(int argc, char *argv[]) {
     for (int i = 1; i < 7; i++) {
         std::string send_data = std::to_string(i * 1111);
         int count = getResponse(&sockfd, send_data.c_str());
+        std::cout << count << std::endl;
         if (count == 4) {
-            std::cout << "Success!" << std::endl;
             close(sockfd);
             return 0;
         } else if (count != 0) {
