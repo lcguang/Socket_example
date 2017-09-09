@@ -6,6 +6,30 @@
 
 #include <cstring>
 #include <iostream>
+#include <vector>
+#include <unordered_set>
+
+int getResponse(int* sockfd, const char* send_data) {
+    std::cout << "My guess: " << send_data << std::endl;
+    if (send(*sockfd, send_data, strlen(send_data) + 1, 0) == -1) {
+        std::cerr << "error sending on stream socket" << std::endl;
+    }
+
+    // Create buffer and receive message
+    char recv_data[10];
+    memset(recv_data, 0, sizeof(recv_data));
+    int recv_len = 0;
+    while (recv_len == 0) {
+        recv_len = recv(*sockfd, recv_data, sizeof(recv_data), 0);
+    }
+    if (recv_len == -1) {
+        std::cerr << "error receiving message" << std::endl;
+    }
+
+    std::cout << "Correct number of digits: " << recv_data << std::endl;
+    
+    return recv_data[0] + '0';
+}
 
 int main(int argc, char *argv[]) {
     // Create socket
@@ -35,21 +59,41 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
 
-    // Send message
-    auto send_data = "Hello, server!";
-    std::cout << "Outgoing message: " << send_data << std::endl;
-    if (send(sockfd, send_data, strlen(send_data) + 1, 0) == -1) {
-        std::cerr << "error sending on stream socket" << std::endl;
+    std::string s = "1234";
+    int r = getResponse(&sockfd, s.c_str());
+
+    // Main algorithm
+    /*
+    std::unordered_set<int> nums;
+    for (int i = 1; i < 7; i++) {
+        std::string send_data = std::to_string(i * 1111);
+        int count = getResponse(&sockfd, send_data.c_str());
+        if (count == 4) {
+            std::cout << "Success!" << std::endl;
+            close(sockfd);
+            return 0;
+        } else if (count != 0) {
+            nums.insert(i);
+        }
     }
 
-    // Create buffer and receive message
-    char recv_data[1024];
-    memset(recv_data, 0, sizeof(recv_data));
-    int recv_len = recv(sockfd, recv_data, sizeof(recv_data), 0);
-    if (recv_len == -1) {
-        std::cerr << "error receiving message" << std::endl;
+    std::vector<int> pos(4, 0);
+    for (auto i : nums) {
+        for (int j = 0; j < 4; j++) {
+            if (pos[j] != 0) continue;
+            std::string send_data = "777";
+            send_data.insert(j, 1, '0' + i);
+            int count = getResponse(&sockfd, send_data.c_str());
+            if (count == 1) pos[j] = i;
+        }
     }
-    std::cout << "Incoming message: " << recv_data << std::endl;
+
+    std::string send_data = "";
+    for (int i = 0; i < 4; i++) send_data.push_back('0' + pos[i]);
+    if (getResponse(&sockfd, send_data.c_str()) == 4) {
+        std::cout << "Success!" << std::endl;
+    }
+    */
 
     close(sockfd);
     return 0;

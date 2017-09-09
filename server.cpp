@@ -43,19 +43,35 @@ int main() {
     }
 
     // Create buffer and receive message
+    std::string answer = "1234";
     char recv_data[1024];
-    memset(recv_data, 0, sizeof(recv_data));
-    int recv_len = recv(msg_fd, recv_data, sizeof(recv_data), 0);
-    if (recv_len == -1) {
-        std::cerr << "error receiving message" << std::endl;
-        exit(1);
-    }
-    std::cout << "Incoming message: " << recv_data << std::endl;
+    while (true) {
+        memset(recv_data, 0, sizeof(recv_data));
+        int recv_len = 0;
+        while (recv_len == 0) {
+            recv_len = recv(sockfd, recv_data, sizeof(recv_data), 0);
+        }
+        if (recv_len == -1) {
+            std::cerr << "error receiving message" << std::endl;
+        }
 
-    // Send message
-    auto send_data = "Hello, client!";
-    std::cout << "Outgoing message: " << send_data << std::endl;
-    send(msg_fd, send_data, strlen(send_data), 0);
+        int count = 0;
+        for (int i = 0; i < 4; i++) {
+            if (recv_data[i] == answer[i]) count++;
+        }
+        if (count < 4) {
+            std::cout << "Correct number of digits: " << count << std::endl;
+        } else {
+            std::cout << "Success!" << std::endl;
+            auto send_data = std::to_string(count).c_str();
+            send(msg_fd, send_data, strlen(send_data), 0);
+            break;
+        }
+
+        // Send message
+        auto send_data = std::to_string(count).c_str();
+        send(msg_fd, send_data, strlen(send_data), 0);
+    }
 
     close(msg_fd);
     return 0;
